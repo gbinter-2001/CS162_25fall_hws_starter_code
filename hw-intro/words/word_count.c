@@ -47,20 +47,41 @@ ssize_t len_words(WordCount *wchead) {
      this function.
   */
     size_t len = 0;
+    WordCount *wc = wchead;
+    while (wc != NULL) {
+      len++;
+      wc = wc->next;
+    }
     return len;
 }
 
 WordCount *find_word(WordCount *wchead, char *word) {
   /* Return count for word, if it exists */
-  WordCount *wc = NULL;
-  return wc;
+  WordCount *wc = wchead;
+  while (wc != NULL) {
+    if (strcmp(wc->word, word) == 0) {
+      return wc;
+    }
+    wc = wc->next;
+  }
+  return NULL;
 }
 
 int add_word(WordCount **wclist, char *word) {
-  /* If word is present in word_counts list, increment the count.
-     Otherwise insert with count 1.
-     Returns 0 if no errors are encountered in the body of this function; 1 otherwise.
-  */
+  WordCount *wc = find_word(*wclist, word);
+  if (wc != NULL) {
+    wc->count++;
+    return 0;
+  }
+  wc = (WordCount *) malloc(sizeof(WordCount));
+  wc->word = new_string(word);
+  if (wc->word == NULL) {
+    free(wc);
+    return 1;
+  }
+  wc->count = 1;
+  wc->next = *wclist;
+  *wclist = wc;
  return 0;
 }
 
